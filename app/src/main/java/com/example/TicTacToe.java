@@ -1,7 +1,5 @@
 package com.example;
 
-import android.widget.Toast;
-
 public class TicTacToe {
 
     public ButtonChar board[][]=new ButtonChar[3][3];
@@ -75,10 +73,10 @@ public class TicTacToe {
         return won;
     }
 
-    public void Drawed(){
+    public void drawed(){
         board=new ButtonChar[3][3];
     }
-    
+
 
 
 }
