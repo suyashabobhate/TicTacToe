@@ -4,10 +4,6 @@ public class TicTacToe {
 
     public char board[][]=new char[3][3];
 
-    public enum ButtonChar{
-        X,O;
-    }
-
     public void set(char c,int x, int y){
         if(board[x][y]==0) {
             board[x][y] = c;
