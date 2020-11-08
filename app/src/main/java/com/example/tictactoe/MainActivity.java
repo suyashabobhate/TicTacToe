@@ -1,5 +1,6 @@
 package com.example.tictactoe;
 
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,24 +14,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button[][] buttons = new Button[3][3];
     private boolean player1Turn = true;
-    private int count;
+    private int count=0;
     private int player1Points;
     private int player2Points;
     private TextView textViewPlayer1;
     private TextView textViewPlayer2;
-    TicTacToe obj;
-    public TicTacToe.ButtonChar c;
+    TicTacToe obj=new TicTacToe();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         textViewPlayer1 = findViewById(R.id.p1);
         textViewPlayer2 = findViewById(R.id.p2);
+        count=0;
 
-        TicTacToe obj=new TicTacToe();
 
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons.length; j++) {
@@ -55,22 +54,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+
         if (!((Button) v).getText().toString().equals("")) {
             return;
         }
-        String[] arrId=String.valueOf(v.getId()).split("");
-        int x=Integer.valueOf(arrId[arrId.length-1]);
-        int y=Integer.valueOf(arrId[arrId.length-2]);
 
+        String tag= (String) v.getTag();
+        int x=Integer.parseInt(String.valueOf(tag.charAt(0)));
+        int y=Integer.parseInt(String.valueOf(tag.charAt(1)));
         if(player1Turn){
-            c= TicTacToe.ButtonChar.X;
-            obj.set(c,x,y);
             ((Button) v).setText("X");
+            obj.set('X',x,y);
         }
         else{
-            c=TicTacToe.ButtonChar.O;
-            obj.set(c,x,y);
             ((Button) v).setText("O");
+            obj.set('O',x,y);
         }
 
         count++;
@@ -92,11 +90,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
     private void player1Wins() {
         player1Points++;
         Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_SHORT).show();
         updatePointsText();
+        obj.resetBoardArr();
         resetBoard();
     }
 
@@ -104,11 +102,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player2Points++;
         Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_SHORT).show();
         updatePointsText();
+        obj.resetBoardArr();
         resetBoard();
     }
 
     private void draw() {
-        obj.drawed();
+        obj.resetBoardArr();
         Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
         resetBoard();
     }
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons.length; j++) {
                 buttons[i][j].setText("");
+                count=0;
                 player1Points=0;
                 player2Points=0;
                 textViewPlayer1.setText("Player 1:"+player1Points);
@@ -139,27 +139,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         }
-
-
-
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

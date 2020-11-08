@@ -2,17 +2,15 @@ package com.example;
 
 public class TicTacToe {
 
-    public ButtonChar board[][]=new ButtonChar[3][3];
-    public int count=0;
+    public char board[][]=new char[3][3];
 
     public enum ButtonChar{
         X,O;
     }
 
-    public void set(ButtonChar c,int x, int y){
-        if(board[x][y]==null) {
+    public void set(char c,int x, int y){
+        if(board[x][y]==0) {
             board[x][y] = c;
-            count++;
         }
     }
 
@@ -21,15 +19,17 @@ public class TicTacToe {
     }
 
     public boolean checkRow(){
-        boolean won=false;
         for(int i=0;i<board.length;i++){
-            ButtonChar start=board[i][0];
-            for(int j=1;j<board[i].length;j++){
-                if(start==board[i][j]){
-                    won=true;
+            int winCount=1;
+            if(board[i][0]!=0) {
+                char start = board[i][0];
+                for (int j = 1; j < board[i].length; j++) {
+                    if (start == board[i][j]) {
+                        winCount++;
+                    }
                 }
             }
-            if(won){
+            if(winCount==board[i].length){
                 return true;
             }
         }
@@ -37,15 +37,17 @@ public class TicTacToe {
     }
 
     public boolean checkColumn(){
-        boolean won=false;
         for(int i=0;i<board.length;i++){
-            ButtonChar start=board[0][i];
-            for(int j=1;j<board[i].length;j++){
-                if(start==board[j][i]){
-                    won=true;
+            int winCount=1;
+            if(board[0][i]!=0) {
+                char start = board[0][i];
+                for (int j = 1; j < board[i].length; j++) {
+                    if (start == board[j][i]) {
+                       winCount++;
+                    }
                 }
             }
-            if(won){
+            if(winCount==board[i].length){
                 return true;
             }
         }
@@ -53,30 +55,35 @@ public class TicTacToe {
     }
 
     public boolean checkDiagonal(){
-        boolean won=false;
-        ButtonChar start=board[0][0];
-        for(int i=1;i<board.length;i++){
-            if(start==board[i][i]){
-                won=true;
+        char start;
+        int winCount=1;
+        if(board[0][0]!=0) {
+            start = board[0][0];
+            for (int i = 1; i < board.length; i++) {
+                if (start == board[i][i]) {
+                    winCount++;
+                }
             }
         }
-        if(won){
+        if(winCount==board.length){
             return true;
         }
-        won=false;
-        start=board[0][board.length-1];
-        for(int i=1;i<board.length;i++){
-            if (start == board[i][board.length - 1 - i]) {
-                won = true;
+        winCount=1;
+        if(board[0][board.length-1]!=0) {
+            start = board[0][board.length - 1];
+            for (int i = 1; i < board.length; i++) {
+                if (start == board[i][board.length - 1 - i]) {
+                   winCount++;
+                }
             }
         }
-        return won;
+        if(winCount==board.length){
+            return true;
+        }
+        return false;
     }
 
-    public void drawed(){
-        board=new ButtonChar[3][3];
+    public void resetBoardArr(){
+        board=new char[3][3];
     }
-
-
-
 }
