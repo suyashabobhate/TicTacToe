@@ -7,20 +7,19 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.TicTacToe;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button[][] buttons = new Button[3][3];
-
     private boolean player1Turn = true;
-
     private int count;
-
     private int player1Points;
     private int player2Points;
-
     private TextView textViewPlayer1;
     private TextView textViewPlayer2;
-
+    TicTacToe obj;
+    public TicTacToe.ButtonChar c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +30,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewPlayer1 = findViewById(R.id.p1);
         textViewPlayer2 = findViewById(R.id.p2);
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        TicTacToe obj=new TicTacToe();
+
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons.length; j++) {
                 String buttonID = "b" + i + j;
                 int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
                 buttons[i][j] = findViewById(resID);
                 buttons[i][j].setOnClickListener(this);
             }
         }
+
         final Button reset = findViewById(R.id.reset);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-if(((Button)v ).getText().toString().equalsIgnoreCase("RESET"))
-{
-    resetBoard1();
-}
+            if(((Button)v ).getText().toString().equalsIgnoreCase("RESET")) {
+                resetBoardOnUsersRequest();
+            }
             }
         });
 
@@ -57,336 +58,40 @@ if(((Button)v ).getText().toString().equalsIgnoreCase("RESET"))
         if (!((Button) v).getText().toString().equals("")) {
             return;
         }
+        String[] arrId=String.valueOf(v.getId()).split("");
+        int x=Integer.valueOf(arrId[arrId.length-1]);
+        int y=Integer.valueOf(arrId[arrId.length-2]);
 
-
-        if (player1Turn) {
+        if(player1Turn){
+            c= TicTacToe.ButtonChar.X;
+            obj.set(c,x,y);
             ((Button) v).setText("X");
-        } else {
+        }
+        else{
+            c=TicTacToe.ButtonChar.O;
+            obj.set(c,x,y);
             ((Button) v).setText("O");
         }
 
         count++;
 
-        if (checkForWin()) {
-            if (player1Turn) {
+        if (obj.didWin()){
+            if (player1Turn){
                 player1Wins();
-            } else {
+            }
+            else{
                 player2Wins();
             }
-        } else if (count == 9) {
+        }
+        else if (count == 9) {
             draw();
-        } else {
+        }
+        else {
             player1Turn = !player1Turn;
         }
 
     }
 
-    private boolean checkForWin() {
-        String[][] field = new String[3][3];
-        String m=null;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                field[i][j] = buttons[i][j].getText().toString();
-            }
-        }
-tl:
-{
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (field[i][j].equals(field[0][0]) && !field[0][0].equals("")) {
-
-
-                if (field[0][1].equals(field[i][j]) && !field[0][1].equals("")) {
-
-                    if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                        //wins!
-                        m = field[i][j];
-                        break tl;
-                    }
-                }
-
-
-                if (field[1][0].equals(field[i][j]) && !field[1][0].equals("")) {
-
-                    if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                        //wins!
-                        m = field[i][j];
-                        break tl;
-                    }
-                }
-
-
-                if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-
-                    if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                        //wins
-                        m = field[i][j];
-                        break tl;
-                    }
-                }
-
-        }
-
-            if (field[i][j].equals(field[2][2]) && !field[2][2].equals("")) {
-
-
-                    if (field[1][2].equals(field[i][j]) && !field[1][2].equals("")) {
-                        if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-                    if (field[2][1].equals(field[i][j]) && !field[2][1].equals("")) {
-                        if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[2][0]) && !field[2][0].equals("")) {
-
-
-                    if (field[1][0].equals(field[i][j]) && !field[1][0].equals("")) {
-                        if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[2][1].equals(field[i][j]) && !field[2][1].equals("")) {
-                        if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[0][2]) && !field[0][2].equals("")) {
-
-
-                    if (field[1][2].equals(field[i][j]) && !field[1][2].equals(""))
-
-                    {
-                        if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-                    if (field[0][1].equals(field[i][j]) && !field[0][1].equals("")) {
-                        if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[1][1]) && !field[1][1].equals("")) {
-
-
-                    if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                        if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][0].equals(field[i][j]) && !field[1][0].equals("")) {
-                        if (field[1][2].equals(field[i][j]) && !field[1][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                        if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[2][1].equals(field[i][j]) && !field[2][1].equals("")) {
-                        if (field[0][1].equals(field[i][j]) && !field[0][1].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[1][0]) && !field[1][0].equals("")) {
-
-
-                    if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                        if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[1][2].equals(field[i][j]) && !field[1][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[0][1]) && !field[0][1].equals("")) {
-
-
-                    if (field[0][0].equals(field[i][j]) && !field[0][0].equals("")) {
-                        if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[2][1].equals(field[i][j]) && !field[2][1].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-            }
-
-            if (field[i][j].equals(field[1][2]) && !field[1][2].equals("")) {
-
-
-                    if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                        if (field[0][2].equals(field[i][j]) && !field[0][2].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[1][0].equals(field[i][j]) && !field[1][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-            }
-
-            if (field[i][j].equals(field[2][1]) && !field[2][1].equals("")) {
-
-
-                    if (field[2][2].equals(field[i][j]) && !field[2][2].equals("")) {
-                        if (field[2][0].equals(field[i][j]) && !field[2][0].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-
-
-                    if (field[1][1].equals(field[i][j]) && !field[1][1].equals("")) {
-                        if (field[0][1].equals(field[i][j]) && !field[0][1].equals("")) {
-                            //wins
-                            m = field[i][j];
-                            break tl;
-                        }
-                    }
-
-
-            }
-
-        }
-    }
-}
-
-if(m=="X" || m=="O" && m!=null)
-    return true;
-
-else
-    return false;
-
-
-
-    }
 
     private void player1Wins() {
         player1Points++;
@@ -403,6 +108,7 @@ else
     }
 
     private void draw() {
+        obj.drawed();
         Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
         resetBoard();
     }
@@ -413,19 +119,18 @@ else
     }
 
     private void resetBoard() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons.length; j++) {
                 buttons[i][j].setText("");
             }
         }
         count=0;
         player1Turn = true;
-
-
     }
-    private void resetBoard1() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+
+    private void resetBoardOnUsersRequest() {
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons.length; j++) {
                 buttons[i][j].setText("");
                 player1Points=0;
                 player2Points=0;
